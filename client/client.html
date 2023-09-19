@@ -2,10 +2,72 @@
 <html lang="en">
 <head>
   <title>Our simple HTTP server</title>
-  <link rel="stylesheet" type="text/css" href="/style.css">
-  
+  <link id="style" rel="stylesheet" type="text/css" href="/style.css">
   <script>
+    let page = '';
+    let type = '';
 
+    window.onload = () => {
+        document.getElementById('send').onclick = () => {
+            page = document.getElementById('page').value;
+            type = document.getElementById('type').value;
+
+            sendRequest(page, type);
+        }
+    }
+
+     //function to send request. This is marked as async since we will use await.
+     const sendRequest = async (url, type) => {      
+      //Await our fetch response. Go to the URL, use the right method, and attach the headers.
+      let response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'Accept': type
+        },
+      });
+
+      //Once we have our response, send it into handle response. The second parameter is a boolean
+      //that says if we should parse the response or not. We will get a response to parse on get
+      //requests so we can do an inline boolean check, which will return a true or false to pass in.
+      handleResponse(response);
+    };
+
+    const handleResponse = async (response) => {
+      
+      //Grab the content section so that we can write to it
+      const content = document.querySelector('#content');
+
+      //Based on the status of the response, write something.
+      switch(response.status) {
+        case 200: 
+          content.innerHTML = `<b>Success: </b>`;
+          break;
+        case 201:
+          content.innerHTML = `<b>Created: </b>`;
+          break;
+        case 400: 
+          content.innerHTML = `<b>Bad Request: </b>`;
+          break;
+        case 404:
+          content.innerHTML = `<b>Resource Not Found: </b>`;
+          break;
+        default: 
+          content.innerHTML = `Error code not implemented by client.`;
+          break;
+      }
+
+      const type = response.headers.get('content-type');
+
+      if (type === 'application/json') {
+        //Parse the response to json. This is an async function, so we will await it.
+        const json = await response.json();
+        content.innerHTML += `${json.message}`;
+      } else if (type === 'text/xml') {
+        const text = await response.text();
+        const xml = new window.DOMParser().parseFromString(text, "text/xml");
+        content.innerHTML += xml.querySelector('message').innerHTML;
+      }
+    };
   </script>
 </head>
 <body>

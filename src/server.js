@@ -1,23 +1,42 @@
 const http = require('http');
 const htmlHandler = require('./htmlResponses.js');
 const styleHandler = require('./cssResponses.js');
-const jsonHandler = require('./jsonResponses.js');
+const responseHandler = require('./responses.js');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
 const onRequest = (request, response) => {
   console.log(request.url);
 
-  switch (request.url) {
+  switch (request.url.split('?')[0]) {
     case '/style.css':
       styleHandler.getCSS(request, response);
       break;
     case '/success':
-      jsonHandler.getSuccess(request, response);
+      responseHandler.getSuccess(request, response);
+      break;
+    case '/badRequest':
+      responseHandler.getBadRequest(request, response);
+      break;
+    case '/unauthorized':
+      responseHandler.getUnauthorized(request, response);
+      break;
+    case '/forbidden':
+      responseHandler.getForbidden(request, response);
+      break;
+    case '/internal':
+      responseHandler.getInternal(request, response);
+      break;
+    case '/notImplemented':
+      responseHandler.getNotImplemented(request, response);
       break;
     case '/':
-    default:
       htmlHandler.getHome(request, response);
+      break;
+    case '/favicon.ico':
+      break;
+    default:
+      responseHandler.getNotFound(request, response);
       break;
   }
 };

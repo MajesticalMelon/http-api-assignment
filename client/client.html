@@ -40,16 +40,28 @@
       //Based on the status of the response, write something.
       switch(response.status) {
         case 200: 
-          content.innerHTML = `<b>Success: </b>`;
+          content.innerHTML = `<b>Success</b>`;
           break;
         case 201:
-          content.innerHTML = `<b>Created: </b>`;
+          content.innerHTML = `<b>Created</b>`;
           break;
         case 400: 
-          content.innerHTML = `<b>Bad Request: </b>`;
+          content.innerHTML = `<b>Bad Request</b>`;
+          break;
+        case 401:
+          content.innerHTML = `<b>Unathorized</b>`;
+          break;
+        case 403:
+          content.innerHTML = `<b>Forbidden</b>`;
           break;
         case 404:
-          content.innerHTML = `<b>Resource Not Found: </b>`;
+          content.innerHTML = `<b>Not Found</b>`;
+          break;
+        case 500:
+          content.innerHTML = `<b>Internal</b>`;
+          break;
+        case 501:
+          content.innerHTML = `<b>Not Implemented</b>`;
           break;
         default: 
           content.innerHTML = `Error code not implemented by client.`;
@@ -61,11 +73,13 @@
       if (type === 'application/json') {
         //Parse the response to json. This is an async function, so we will await it.
         const json = await response.json();
-        content.innerHTML += `${json.message}`;
+        console.log(json);
+        content.innerHTML += `<p>${json.message}</p>`;
       } else if (type === 'text/xml') {
         const text = await response.text();
         const xml = new window.DOMParser().parseFromString(text, "text/xml");
-        content.innerHTML += xml.querySelector('message').innerHTML;
+        console.log(xml);
+        content.innerHTML += `<p>${xml.querySelector('message').innerHTML}</p>`;
       }
     };
   </script>

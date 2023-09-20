@@ -5,6 +5,5 @@
 	"no-plusplus": "off",
     "import/extensions": "off",
     "linebreak-style": "off"
-
   }
 }

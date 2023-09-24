@@ -57,10 +57,10 @@ const getUnauthorized = (request, response) => {
   const status = valid ? 200 : 401;
 
   const unauthorizedXML = `<response>${valid
-    ? '<message>This request has the required parameters</message>'
+    ? '<message>You have successfully viewed the content</message>'
     : '<message>Missing loggedIn query paramater set to yes</message><id>unauthorized</id>'}</response>`;
   const unauthorizedJSON = JSON.stringify(valid
-    ? { message: 'This request has the required parameters' }
+    ? { message: 'You have successfully viewed the content' }
     : { message: 'Missing loggedIn query paramater set to yes', id: 'unauthorized' });
 
   if (acceptHeader === 'text/xml') {
